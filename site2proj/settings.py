@@ -12,9 +12,11 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 
 from pathlib import Path
 from decouple import config
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+#BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__))) # https://devcenter.heroku.com/articles/django-assets
 
 
 # Quick-start development settings - unsuitable for production
@@ -31,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'polls.apps.PollsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -41,6 +44,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware", # http://whitenoise.evans.io/en/stable/django.html
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -105,7 +109,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Japan'
 
 USE_I18N = True
 
@@ -113,9 +117,18 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.0/howto/static-files/
+# https://docs.djangoproject.com/en/4.0/howto/static-files/                         
 
-STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+print(f"STATIC_ROOT is {STATIC_ROOT}")
+#STATIC_URL = 'static/'
+STATIC_URL = '/static/'  # https://devcenter.heroku.com/articles/django-assets
+
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage" # http://whitenoise.evans.io/en/stable/django.html
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
